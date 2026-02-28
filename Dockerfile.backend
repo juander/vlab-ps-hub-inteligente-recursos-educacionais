@@ -1,16 +1,27 @@
-FROM php:8.3-cli
+FROM php:8.3-cli-alpine AS base
 
 WORKDIR /var/www/backend
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends git unzip libpq-dev postgresql-client \
+RUN apk add --no-cache postgresql-client \
+    && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS postgresql-dev \
     && docker-php-ext-install pdo pdo_pgsql \
-    && rm -rf /var/lib/apt/lists/*
+    && apk del .build-deps \
+    && rm -rf /tmp/*
+
+FROM base AS build
+
+RUN apk add --no-cache git unzip
 
 COPY --from=composer:2.8 /usr/bin/composer /usr/bin/composer
 
 COPY backend .
-RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader \
+    && composer clear-cache \
+    && rm -rf /root/.composer/cache /tmp/*
+
+FROM base
+
+COPY --from=build /var/www/backend /var/www/backend
 
 RUN mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache \
     && chown -R www-data:www-data /var/www/backend/storage /var/www/backend/bootstrap/cache
