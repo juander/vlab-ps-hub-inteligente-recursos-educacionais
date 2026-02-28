@@ -1,0 +1,13 @@
+/.env
+/backend/vendor
+/backend/.env
+/backend/storage/logs/*.log
+/frontend/node_modules
+/frontend/dist
+/test.sh
+/test_assist.sh
+/frontend/*.tsbuildinfo
+/frontend/vite.config.d.ts
+/frontend/vite.config.js
+/.DS_Store
+**/.DS_Store

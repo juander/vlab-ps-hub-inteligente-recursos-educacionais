@@ -1,0 +1,20 @@
+FROM php:8.3-cli
+
+WORKDIR /var/www/backend
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends git unzip libpq-dev postgresql-client \
+    && docker-php-ext-install pdo pdo_pgsql \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=composer:2.8 /usr/bin/composer /usr/bin/composer
+
+COPY backend .
+RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+
+RUN mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache \
+    && chown -R www-data:www-data /var/www/backend/storage /var/www/backend/bootstrap/cache
+
+EXPOSE 8000
+
+CMD ["sh", "-c", "cp -n .env.example .env && php artisan key:generate --ansi --force && until pg_isready -h \"$DB_HOST\" -p \"$DB_PORT\" -U \"$DB_USERNAME\"; do sleep 1; done && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000"]
