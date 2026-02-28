@@ -22,5 +22,7 @@
         <env name="LOG_CHANNEL" value="single"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
+        <env name="GEMINI_API_KEY" value="test-key"/>
+        <env name="GEMINI_MODEL" value="gemini-2.5-flash"/>
     </php>
 </phpunit>
