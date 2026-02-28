@@ -52,6 +52,18 @@ Projeto fullstack para cadastro de recursos educacionais com CRUD, paginação, 
 - `POST /api/v1/resources/smart-assist`
 - `GET /health`
 
+## Requisitos do processo seletivo (atendidos)
+### Frontend
+- Tratamento de falha da IA: quando `POST /api/v1/resources/smart-assist` falha, a interface exibe mensagem de erro amigável.
+- Tratamento de demora da IA: durante a geração, o botão fica em estado de carregamento (`Gerando...`) e erros de timeout/resposta lenta são exibidos ao usuário via feedback de erro.
+
+### Backend
+- Observabilidade com logs estruturados na integração com IA:
+  - Sucesso e erro são registrados com `title`, `tokens`, `latency_ms` e `status`.
+  - Exemplo esperado no desafio: `[INFO] AI Request: Title="Matemática Financeira", TokenUsage=150, Latency=1.2s`.
+  - Exemplo atual (estruturado): `{"message":"AI Request","context":{"title":"Matemática Financeira","tokens":150,"latency_ms":1200,"status":"success"}}`.
+- Health Check disponível em `GET /health`.
+
 ## Exemplos de request
 ### Health
 ```bash
