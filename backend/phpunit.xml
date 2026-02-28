@@ -21,5 +21,6 @@
         <env name="DB_DATABASE" value=":memory:"/>
         <env name="LOG_CHANNEL" value="single"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
+        <env name="SESSION_DRIVER" value="array"/>
     </php>
 </phpunit>
