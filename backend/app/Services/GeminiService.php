@@ -23,11 +23,17 @@ class GeminiService
         try {
             $this->guardCircuit();
 
+            $apiKey = (string) config('services.gemini.api_key');
+            $model = (string) config('services.gemini.model', 'gemini-2.5-flash');
+            if (trim($apiKey) === '') {
+                throw new GeminiException('Configuração ausente: defina GEMINI_API_KEY no backend.', 500);
+            }
+
             $endpoint = sprintf(
                 '%s/%s:generateContent?key=%s',
                 config('services.gemini.endpoint'),
-                config('services.gemini.model', 'gemini-2.5-flash'),
-                config('services.gemini.api_key')
+                $model,
+                $apiKey,
             );
 
             $response = Http::timeout(10)

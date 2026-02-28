@@ -8,16 +8,23 @@ Projeto fullstack para cadastro de recursos educacionais com CRUD, paginação, 
 - Infra: Docker Compose, GitHub Actions
 
 ## Como rodar com Docker
-1. Defina as variáveis no shell (ou em um `.env` na raiz usado pelo Docker Compose):
+1. Prepare os arquivos de ambiente:
    ```bash
-   export GEMINI_API_KEY="SUA_CHAVE"
-   export GEMINI_MODEL="gemini-2.5-flash"
+   cp backend/.env.example backend/.env
+   cp frontend/.env.example frontend/.env
    ```
-2. Suba os serviços:
+2. No `backend/.env`, defina:
+   - `GEMINI_API_KEY="SUA_CHAVE"`
+   - `GEMINI_MODEL="gemini-2.5-flash"` (opcional)
+3. (Opcional) Se quiser sobrescrever a URL da API no build do frontend Docker, exporte:
+   ```bash
+   export VITE_API_URL="http://localhost:8000/api/v1"
+   ```
+4. Suba os serviços:
    ```bash
    docker compose up -d --build
    ```
-3. Acesse:
+5. Acesse:
    - Frontend: `http://localhost:5173`
    - Backend: `http://localhost:8000`
 
@@ -30,7 +37,12 @@ Projeto fullstack para cadastro de recursos educacionais com CRUD, paginação, 
 - `FRONTEND_URL`
 
 ### Frontend (`frontend/.env`)
-- `VITE_API_URL` (exemplo: `http://localhost:8000/api/v1`)
+- `VITE_API_URL` (para rodar `npm run dev` localmente)
+
+### Frontend no Docker
+- O frontend Docker recebe `VITE_API_URL` via `build.args` no `docker-compose.yml`
+- Valor padrão: `http://localhost:8000/api/v1`
+- Para sobrescrever, use `export VITE_API_URL=...` antes de `docker compose up --build`
 
 ## Endpoints
 - `GET /api/v1/resources`
